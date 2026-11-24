@@ -1,46 +1,63 @@
-# LIBRARY.C-
-Classes:
-Book: Represents a book with attributes such as title, author, and availability status.
+# Library Management System (C++)
 
-User: Represents a library user with a name.
+A console program that manages a library's books, users, loans and due dates. Data is saved to a file, so it survives restarts.
 
-Library: Manages books and users, provides functionalities such as adding books, removing books, searching for books, borrowing books, and returning books.
+## Classes
 
-Operations:
-Adding a Book: Users can add books to the library by providing the title and author.
+- **Book**: title, author, availability status, who borrowed it and the due date.
+- **User**: a library user with a name.
+- **Library**: stores books and users, and provides adding, removing, searching, borrowing and returning, plus loan reports and saving/loading.
 
-Removing a Book: Books can be removed from the library by specifying the title.
+## Operations
 
-Searching for Books: Users can search for books by providing a search term. The search term is matched against both the title and author of each book.
+| Operation | How it works |
+|---|---|
+| Add a book | Provide a title and author. Empty input, duplicate titles and the `\|` character are rejected. |
+| Remove a book | Specify the title (case-insensitive). A borrowed book cannot be removed. |
+| Search | The term is matched against both title and author (case-insensitive). |
+| Borrow | The user must be registered. The book must be available. Limit of 3 books per user. Loan period is 14 days. |
+| Return | Only the user who borrowed the book can return it. Overdue days are reported. |
+| My books | Lists the books a user currently has. |
+| Overdue | Lists every book past its due date. |
+| Register user | Adds a new library user. |
 
-Borrowing a Book: Users can borrow a book from the library by specifying the title. If the book is available, its availability status is updated, and the user is informed.
+## Improvements over the basic spec
 
-Returning a Book: Users can return a borrowed book to the library by specifying the title. If the book is not already available, its availability status is updated, and the user is informed.
+- Each book remembers who borrowed it, so only that person can return it.
+- Due dates and overdue tracking.
+- A borrow limit per user.
+- Data is saved to `library_data.txt` after every change and loaded at startup.
+- Input validation and clear error messages.
 
-Sample Usage:
-Adding sample books to the library.
+## Compilation
 
-Searching for books containing the term "Scott".
+```bash
+g++ -std=c++11 -Wall -Wextra -o library_management library_management.cpp
+```
 
-Borrowing "The Great Gatsby" and "To Kill a Mockingbird" by a user named "John Doe".
+## Execution
 
-Returning "To Kill a Mockingbird".
+```bash
+./library_management          # interactive menu (data saved to library_data.txt)
+./library_management --demo   # runs the sample scenario, nothing is saved
+```
 
-Searching for books containing the term "Scott" after borrowing.
+On Windows, run `library_management.exe` instead.
 
-Readme:
-Compilation: Compile the program using a C++ compiler. For example, using g++, run g++ -o library_management library_management.cpp.
+## Usage
 
-Execution: Execute the compiled program. For example, ./library_management.
+Follow the menu prompts: type the number of an option, then enter the details when asked. Register yourself first (option 9) before borrowing books. Choose `0` to save and exit.
 
-Usage: Follow the instructions displayed in the program's output to interact with the library management system.
+The `--demo` option runs this sample scenario:
 
-Customization: You can customize the program by modifying the main() function to add more books, perform different operations, or create multiple users.
+1. Adds sample books and registers "John Doe".
+2. Searches for "Scott".
+3. John Doe borrows "The Great Gatsby" and "To Kill a Mockingbird".
+4. John Doe returns "To Kill a Mockingbird".
+5. Searches for "Scott" again to show the updated availability.
 
-Dependencies: The program uses standard C++ libraries and does not require any external dependencies.
+## Customization
 
-Contributions: Contributions to the program, such as adding new features or improving existing ones, are welcome. Please follow the existing code style and conventions.
-
-License: This program is provided under an open-source license. See the accompanying license file for details.
-
-Feedback: If you encounter any issues or have suggestions for improvement, please feel free to open an issue or submit a pull request on the project's repository.
+- Change `MAX_LOANS` and `LOAN_DAYS` at the top of the `Library` class to adjust the borrow limit and loan period.
+- Edit `runSampleUsage()` to try different scenarios.
+- Delete `library_data.txt` to reset the library to empty.
